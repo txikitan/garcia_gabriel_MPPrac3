@@ -1,8 +1,14 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 /* Metodologias de la programacion - Practica 3
  *   Clase que implementa el TAD Laberinto que representara la estructura para poder operar y cargar un laberinto cualquiera
  *   Gabriel Garcia (gabriel.garcia@estudiants.urv.cat)
  */
-public class Laberint implements ILaberint{
+public class Laberint {
+
+
     /*Clase entacada que nos definira las casillas del laberinto*/
     private static class Casilla {
         private final char operacion;
@@ -31,7 +37,7 @@ public class Laberint implements ILaberint{
     private final Casilla salida;   // Casilla de salida del laberinto
 
     /*Constructor, la idea es que solo sea llamado desde el metodo load */
-    public Laberint(int fila, int columna, int puntuacion, Casilla[][] laberinto, Casilla salida, int nFilas, int nCol) {
+    private Laberint(int fila, int columna, int puntuacion, Casilla[][] laberinto, Casilla salida, int nFilas, int nCol) {
         this.pos_fila=fila;
         this.pos_columna=columna;
         this.laberinto = laberinto;
@@ -57,14 +63,38 @@ public class Laberint implements ILaberint{
     }
 
     /*Metodo que cargara el laberinto de un fichero de texto cuyo nombre vendra dado por parametro*/
-    public void load(String filename) {
-
+    public static Laberint load(String filename) throws IOException {
+        BufferedReader in = new BufferedReader(new FileReader(filename));
+        String str = in.readLine();
+        String[] tokens = str.split(",");
+        int nFilas = Integer.parseInt(tokens[0]);
+        int nCol = Integer.parseInt(tokens[1]);
+        int pos_fila = Integer.parseInt(tokens[2]);
+        int pos_col = Integer.parseInt(tokens[3]);
+        int fila_salida = Integer.parseInt(tokens[4]);
+        int col_salida = Integer.parseInt(tokens[5]);
+        Casilla[][] laberinto = new Casilla[nFilas][nCol];
+        int j=0;
+        while ((str = in.readLine()) != null && j<nFilas) {
+            tokens = str.split(",");
+            for(int i=0;i<tokens.length;i++){
+                if(tokens[i].equalsIgnoreCase("NA")) laberinto[j][i]=null;
+                else laberinto[j][i] = new Casilla(tokens[i].charAt(0),Integer.parseInt(String.valueOf(tokens[i].charAt(1))));
+            }
+            j++;
+        }
+        Laberint full_laberint = new Laberint(pos_fila,pos_col,0,laberinto,laberinto[fila_salida][col_salida],nFilas,nCol);
+        full_laberint.operar(pos_fila,pos_col);
+        full_laberint.laberinto[pos_fila][pos_col].visited=true;
+        return full_laberint;
     }
+
 
     /*Metodo que efectua un movimiento dentro del laberinto, devuelve:
     *   0: movimiento efectuado con normalidad
     *   1: se ha llegado al final del laberinto
-    *   -1: No se ha podido realizar el movimiento por que se ha llegado al limite del laberinto, puntuacion inferior a 1 o la casilla es inaccesible*/
+    *   -1: No se ha podido realizar el movimiento por que se ha llegado al limite del laberinto, puntuacion inferior a 1 o la casilla es inaccesible
+    *   Param direction = 'l' izquierda, 'r' derecha, 'u' up, 'd' down*/
     public int move(char direction) {
         if(direction=='l') {
             if(pos_columna-1>=0 && operar(this.pos_fila,this.pos_columna-1)) {
@@ -121,5 +151,14 @@ public class Laberint implements ILaberint{
             this.puntuacion = puntuacionCopy;
             return true;
         }
+    }
+
+    /*Getters y setters basicos*/
+    public int getnFilas() {
+        return nFilas;
+    }
+
+    public int getnCol() {
+        return nCol;
     }
 }
