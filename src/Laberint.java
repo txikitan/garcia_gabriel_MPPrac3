@@ -31,7 +31,11 @@ public class Laberint {
         }
     }
 
-    private int pos_fila, pos_columna, puntuacion; // Posicion actual en el laberinto
+
+
+    private int pos_fila;
+    private int pos_columna;
+    private int puntuacion; // Posicion actual en el laberinto
     private final int nFilas, nCol; // Numero de filas y de columnas del laberinto (dim)
     private final Casilla[][] laberinto; // Laberinto en si
     private final Casilla salida;   // Casilla de salida del laberinto
@@ -93,7 +97,7 @@ public class Laberint {
     /*Metodo que efectua un movimiento dentro del laberinto, devuelve:
     *   0: movimiento efectuado con normalidad
     *   1: se ha llegado al final del laberinto
-    *   -1: No se ha podido realizar el movimiento por que se ha llegado al limite del laberinto, puntuacion inferior a 1 o la casilla es inaccesible
+    *   -1: No se ha podido realizar el movimiento por que se ha sobrepasado al limite del laberinto, puntuacion inferior a 1,casilla es inaccesible o visitada
     *   Param direction = 'l' izquierda, 'r' derecha, 'u' up, 'd' down*/
     public int move(char direction) {
         if(direction=='l') {
@@ -124,6 +128,19 @@ public class Laberint {
         else this.laberinto[pos_fila][pos_columna].visited=true;
         if(this.laberinto[pos_fila][pos_columna].equals(this.salida)) return 1;
         return 0;
+    }
+
+    public boolean bloqueado(){
+        if(pos_columna-1 >= 0 && (this.laberinto[pos_fila][pos_columna-1]== null || this.laberinto[pos_fila][pos_columna - 1].visited)) {
+            if(pos_columna+1<=this.nCol && (this.laberinto[pos_fila][pos_columna+1]== null || this.laberinto[pos_fila][pos_columna + 1].visited)) {
+                if(pos_fila-1>=0 && (this.laberinto[pos_fila-1][pos_columna]== null || this.laberinto[pos_fila - 1][pos_columna].visited)) {
+                    return pos_fila + 1 <= this.nFilas && (this.laberinto[pos_fila - 1][pos_columna] == null || this.laberinto[pos_fila - 1][pos_columna].visited);
+                }
+                else return false;
+            }
+            else return false;
+        }
+        else return false;
     }
 
     /*Metodo que ejecuta la operacion de la casilla del laberinto correspondiente a las coordenadas indicadas por parametro, devolvera:
@@ -161,4 +178,17 @@ public class Laberint {
     public int getnCol() {
         return nCol;
     }
+
+    public int getPuntuacion() {
+        return puntuacion;
+    }
+
+    public int getPos_fila() {
+        return pos_fila;
+    }
+
+    public int getPos_columna() {
+        return pos_columna;
+    }
+
 }
