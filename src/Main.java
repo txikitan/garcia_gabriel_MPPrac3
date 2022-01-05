@@ -9,6 +9,8 @@ public class Main {
         String filename = "test.txt";
         try {
             Laberint lab = Laberint.load(filename);
+            Solver solver = new Solver(lab);
+            solver.avid();
         } catch (IOException e) {
             e.printStackTrace();
         }
