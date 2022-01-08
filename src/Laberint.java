@@ -28,6 +28,10 @@ public class Laberint {
             this.valor = c.valor;
             this.visited = c.visited;
         }
+
+        public boolean isVisited() {
+            return visited;
+        }
     }
 
 
@@ -212,5 +216,9 @@ public class Laberint {
 
     public Casilla[][] getLaberinto() {
         return laberinto;
+    }
+
+    public void setVisited(int x, int y) {
+        this.laberinto[x][y].visited=true;
     }
 }

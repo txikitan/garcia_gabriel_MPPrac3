@@ -104,6 +104,48 @@ public class Solver {
     /* *************************************************************** */
     /* ** CERCA EXHAUSTIVA (BACKTRACKING) AMB PODA I RAMIFICACIO ***** */
     /* *************************************************************** */
+    public void exhaustivaPyR() {
+        solveExhaustiva(laberinto.getPos_fila(), laberinto.getPos_columna());
+        printSol();
+    }
 
-
+    public boolean solveExhaustiva(int x, int y) {
+        if (x == laberinto.getFila_salida() && y == laberinto.getColumna_salida()) return true;
+        Laberint laberintoCopy = new Laberint(this.laberinto);
+        if ((x!=laberinto.getPos_fila() && x!=laberinto.getPos_columna()) && ((!laberintoCopy.operar(x, y)) || laberintoCopy.getLaberinto()[x][y].isVisited())) return false;
+        if (x!=laberinto.getPos_fila() && x!=laberinto.getPos_columna()) laberinto.setVisited(x,y);
+        if (x!=0) // aqui puedo podar con precondiciones {
+            if(solveExhaustiva(x-1,y)) {
+                solucion[x][y]=index;
+                laberinto.operar(x,y);
+                index++;
+                return true;
+                //probar con un move
+        }
+        if (x!=laberinto.getnCol()-1){
+            if(solveExhaustiva(x+1,y)){
+                solucion[x][y]=index;
+                laberinto.operar(x,y);
+                index++;
+                return true;
+            }
+        }
+        if (y!=0){
+            if(solveExhaustiva(x,y-1)){
+                solucion[x][y]=index;
+                laberinto.operar(x,y);
+                index++;
+                return true;
+            }
+        }
+        if(x!=laberinto.getnFilas()-1){
+            if(solveExhaustiva(x,y+1)){
+                solucion[x][y]=index;
+                laberinto.operar(x,y);
+                index++;
+                return true;
+            }
+        }
+        return false;
+    }
 }

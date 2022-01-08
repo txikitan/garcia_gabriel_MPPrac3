@@ -10,7 +10,7 @@ public class Main {
         try {
             Laberint lab = Laberint.load(filename);
             Solver solver = new Solver(lab);
-            solver.avid();
+            solver.exhaustivaPyR();
         } catch (IOException e) {
             e.printStackTrace();
         }
