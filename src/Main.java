@@ -11,6 +11,7 @@ public class Main {
             Laberint lab = Laberint.load(filename);
             Solver solver = new Solver(lab);
             solver.exhaustivaPyR();
+            //solver.avid();
         } catch (IOException e) {
             e.printStackTrace();
         }

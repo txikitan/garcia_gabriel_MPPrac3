@@ -28,15 +28,16 @@ public class Solver {
     private void printSol(){
         for(int i=0;i<laberinto.getnFilas();i++){
             for(int j=0;j<laberinto.getnCol();j++){
-                if(solucion[i][j]==-1) System.out.print("I ");
-                else if(solucion[i][j]==0) System.out.print("X ");
-                else if(solucion[i][j]==-2) System.out.print("F");
-                else if(solucion[i][j]==-3) System.out.print("N ");
-                else System.out.print(solucion[i][j]+" ");
+                if(solucion[i][j]==-1) System.out.print("I\t");
+                else if(solucion[i][j]==0) System.out.print("X\t");
+                else if(solucion[i][j]==-2) System.out.print("F\t");
+                else if(solucion[i][j]==-3) System.out.print("N\t");
+                else System.out.print(solucion[i][j]+"\t");
             }
             System.out.println();
         }
-        System.out.println("La puntaucion ha sido: "+this.laberinto.getPuntuacion());
+        System.out.println();
+        //System.out.println("La puntaucion ha sido: "+this.laberinto.getPuntuacion());
     }
 
     /* ******************** */
@@ -81,19 +82,19 @@ public class Solver {
             int nCol = laberinto.getnCol();
             /* Escogemos el primer movimiento como referencia para comparar */
             // Up: Siempre y cuando la diagonal superior no sea nula o visitada y no nos encontremos en la primera fila
-            if(!(laberinto.diagonalUpNull()) && pos_Fil!=0 && res_up!=-1 && !(l_up.bloqueado())) l_final = l_up;
+            if(!(laberinto.diagonalUpNull()) && pos_Fil!=0 && res_up!=-1 && !(l_up.bloqueado(pos_Fil,pos_Col))) l_final = l_up;
             // Down: Siempre y cuando la diagonal inferior no sea nula o visitada y no nos encontremos en la ultima fila
-            else if(!(laberinto.diagonalDownNull()) && pos_Fil!=nFilas-1 && res_down!=-1 && !(l_down.bloqueado())) l_final = l_down;
+            else if(!(laberinto.diagonalDownNull()) && pos_Fil!=nFilas-1 && res_down!=-1 && !(l_down.bloqueado(pos_Fil,pos_Col))) l_final = l_down;
             // Left: Siempre que no nos encontremos por encima de la mitad del recorrido, que no estemos en la ultima ni primera fila ni columna
-            else if(pos_Col<((nCol-1)/2) && pos_Fil!=nFilas-1 && pos_Fil != 0 && pos_Col!=nCol && pos_Col!=0 && res_left!=-1 && !(l_left.bloqueado())) l_final = l_left;
+            else if(pos_Col<((nCol-1)/2) && pos_Fil!=nFilas-1 && pos_Fil != 0 && pos_Col!=nCol && pos_Col!=0 && res_left!=-1 && !(l_left.bloqueado(pos_Fil,pos_Col))) l_final = l_left;
             // Right: Siempre que no nos encontremos en la ultima columna
-            else if(pos_Col!=nCol-1 && res_right!=-1 && !(l_right.bloqueado())) l_final = l_right;
+            else if(pos_Col!=nCol-1 && res_right!=-1 && !(l_right.bloqueado(pos_Fil,pos_Col))) l_final = l_right;
             else return -1;
             /*Empezamos a comparar*/
-            if(!(laberinto.diagonalUpNull()) && pos_Fil!=0 && res_up!=-1 && !(l_up.bloqueado()) && l_up.getPuntuacion()>l_final.getPuntuacion()) l_final = l_up;
-            if(!(laberinto.diagonalDownNull()) && pos_Fil!=nFilas-1 && res_down!=-1 && !(l_down.bloqueado()) && l_down.getPuntuacion()>l_final.getPuntuacion()) l_final = l_down;
-            if(pos_Col<((nCol-1)/2) && pos_Fil!=nFilas-1 && pos_Fil != 0 && pos_Col!=nCol && pos_Col!=0 && res_left!=-1 && !(l_left.bloqueado()) && l_left.getPuntuacion()>l_final.getPuntuacion()) l_final = l_left;
-            if(pos_Col!=nCol-1 && res_right!=-1 && !(l_right.bloqueado()) && l_right.getPuntuacion()>l_final.getPuntuacion()) l_final = l_right;
+            if(!(laberinto.diagonalUpNull()) && pos_Fil!=0 && res_up!=-1 && !(l_up.bloqueado(pos_Fil,pos_Col)) && l_up.getPuntuacion()>l_final.getPuntuacion()) l_final = l_up;
+            if(!(laberinto.diagonalDownNull()) && pos_Fil!=nFilas-1 && res_down!=-1 && !(l_down.bloqueado(pos_Fil,pos_Col)) && l_down.getPuntuacion()>l_final.getPuntuacion()) l_final = l_down;
+            if(pos_Col<((nCol-1)/2) && pos_Fil!=nFilas-1 && pos_Fil != 0 && pos_Col!=nCol && pos_Col!=0 && res_left!=-1 && !(l_left.bloqueado(pos_Fil,pos_Col)) && l_left.getPuntuacion()>l_final.getPuntuacion()) l_final = l_left;
+            if(pos_Col!=nCol-1 && res_right!=-1 && !(l_right.bloqueado(pos_Fil,pos_Col)) && l_right.getPuntuacion()>l_final.getPuntuacion()) l_final = l_right;
             /*Asignamos el laberinto con el movimiento optimo escogido al laberinto principal para hacerlo efectivo*/
             this.laberinto = l_final;
             return 0;
@@ -111,38 +112,42 @@ public class Solver {
 
     public boolean solveExhaustiva(int x, int y) {
         if (x == laberinto.getFila_salida() && y == laberinto.getColumna_salida()) return true;
-        Laberint laberintoCopy = new Laberint(this.laberinto);
-        if ((x!=laberinto.getPos_fila() && x!=laberinto.getPos_columna()) && ((!laberintoCopy.operar(x, y)) || laberintoCopy.getLaberinto()[x][y].isVisited())) return false;
-        if (x!=laberinto.getPos_fila() && x!=laberinto.getPos_columna()) laberinto.setVisited(x,y);
-        if (x!=0) // aqui puedo podar con precondiciones {
-            if(solveExhaustiva(x-1,y)) {
-                solucion[x][y]=index;
-                laberinto.operar(x,y);
+        //Laberint laberintoCopy = new Laberint(this.laberinto);
+        if ((x!=laberinto.getPos_fila() || y!=laberinto.getPos_columna()) && ((!laberinto/*Copy*/.operar(x, y)) || laberinto/*Copy*/.getLaberinto()[x][y].isVisited())) return false;
+        if (x!=laberinto.getPos_fila() || y!=laberinto.getPos_columna()) laberinto.setVisited(x,y);
+        if (x != 0 && !laberinto.bloqueado(x-1,y) && x-1!=laberinto.getPos_fila()) {
+            if (solveExhaustiva(x - 1, y)) {
+                if(solucion[x][y]!=-1)solucion[x][y] = index;
+                laberinto.operar(x - 1, y);
                 index++;
-                return true;
-                //probar con un move
-        }
-        if (x!=laberinto.getnCol()-1){
-            if(solveExhaustiva(x+1,y)){
-                solucion[x][y]=index;
-                laberinto.operar(x,y);
-                index++;
+                printSol();
                 return true;
             }
         }
-        if (y!=0){
-            if(solveExhaustiva(x,y-1)){
-                solucion[x][y]=index;
-                laberinto.operar(x,y);
+        if (x != laberinto.getnFilas() - 1 && !laberinto.bloqueado(x+1,y) && x+1!=laberinto.getPos_fila()) {
+            if (solveExhaustiva(x + 1, y)) {
+                if(solucion[x][y]!=-1)solucion[x][y] = index;
+                laberinto.operar(x + 1, y);
                 index++;
+                printSol();
                 return true;
             }
         }
-        if(x!=laberinto.getnFilas()-1){
-            if(solveExhaustiva(x,y+1)){
-                solucion[x][y]=index;
-                laberinto.operar(x,y);
+        if (y != 0 && !laberinto.bloqueado(x,y-1) && y-1!=laberinto.getPos_columna()) {
+            if (solveExhaustiva(x, y - 1)) {
+                if(solucion[x][y]!=-1)solucion[x][y] = index;
+                laberinto.operar(x, y - 1);
                 index++;
+                printSol();
+                return true;
+            }
+        }
+        if (y != laberinto.getnCol() - 1 && !laberinto.bloqueado(x,y+1) && y+1!=laberinto.getPos_columna()) {
+            if (solveExhaustiva(x, y + 1)) {
+                if(solucion[x][y]!=-1)solucion[x][y] = index;
+                laberinto.operar(x, y + 1);
+                index++;
+                printSol();
                 return true;
             }
         }

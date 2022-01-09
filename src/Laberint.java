@@ -136,11 +136,13 @@ public class Laberint {
         return 0;
     }
 
-    public boolean bloqueado() {
-        if (pos_columna - 1 >= 0 && (this.laberinto[pos_fila][pos_columna - 1] == null || this.laberinto[pos_fila][pos_columna - 1].visited)) {
-            if (pos_columna + 1 < this.nCol && (this.laberinto[pos_fila][pos_columna + 1] == null || this.laberinto[pos_fila][pos_columna + 1].visited)) {
-                if (pos_fila - 1 >= 0 && (this.laberinto[pos_fila - 1][pos_columna] == null || this.laberinto[pos_fila - 1][pos_columna].visited)) {
-                    return pos_fila + 1 <= this.nFilas && (this.laberinto[pos_fila - 1][pos_columna] == null || this.laberinto[pos_fila - 1][pos_columna].visited);
+    /*Metodo que devolvera true en caso de encontrarse bloqueada la casilla correspondiente a las coordenadas pasadas por parametro
+    *   estara bloqueada en caso de: estar rodeada de casillas visitadas, nulas o fuera de limite, o una combinacion de las tres */
+    public boolean bloqueado(int x, int y) {
+        if ((y==0) || (y- 1 >= 0 && (this.laberinto[x][y - 1] == null || this.laberinto[x][y - 1].visited))) {
+            if ((y==nCol) || (y + 1 < this.nCol && (this.laberinto[x][y + 1] == null || this.laberinto[x][y + 1].visited))) {
+                if ((x==0) || (x - 1 >= 0 && (this.laberinto[x - 1][y] == null || this.laberinto[x - 1][y].visited))) {
+                    return (x==nFilas) || (x + 1 < this.nFilas && (this.laberinto[x + 1][y] == null || this.laberinto[x + 1][y].visited));
                 } else return false;
             } else return false;
         } else return false;
@@ -171,7 +173,9 @@ public class Laberint {
         }
     }
 
+    /*Metodo que nos indica si la casilla diagonal inferior derecha es accesible */
     public boolean diagonalDownNull() {
+        if(pos_fila+1>=nFilas || pos_columna+1>=nCol) return true;
         if (laberinto[pos_fila + 1][pos_columna + 1] == null) return true;
         else {
             return laberinto[pos_fila + 1][pos_columna + 1].visited;
@@ -179,6 +183,7 @@ public class Laberint {
     }
 
     public boolean diagonalUpNull() {
+        if(pos_fila-1<0 || pos_columna+1<0) return true;
         if (laberinto[pos_fila - 1][pos_columna + 1] == null) return true;
         else {
             return laberinto[pos_fila - 1][pos_columna + 1].visited;
