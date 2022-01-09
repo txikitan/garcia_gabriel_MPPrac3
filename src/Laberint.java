@@ -226,4 +226,9 @@ public class Laberint {
     public void setVisited(int x, int y) {
         this.laberinto[x][y].visited=true;
     }
+
+    public void setPuntuacion(int puntuacion) {
+        this.puntuacion = puntuacion;
+    }
+
 }

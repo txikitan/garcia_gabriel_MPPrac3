@@ -106,17 +106,19 @@ public class Solver {
     /* ** CERCA EXHAUSTIVA (BACKTRACKING) AMB PODA I RAMIFICACIO ***** */
     /* *************************************************************** */
     public void exhaustivaPyR() {
-        solveExhaustiva(laberinto.getPos_fila(), laberinto.getPos_columna());
+        solveExhaustiva(laberinto.getPos_fila(), laberinto.getPos_columna(),laberinto.getPuntuacion());
         printSol();
     }
 
-    public boolean solveExhaustiva(int x, int y) {
+    public boolean solveExhaustiva(int x, int y,int puntuacion) {
         if (x == laberinto.getFila_salida() && y == laberinto.getColumna_salida()) return true;
-        //Laberint laberintoCopy = new Laberint(this.laberinto);
-        if ((x!=laberinto.getPos_fila() || y!=laberinto.getPos_columna()) && ((!laberinto/*Copy*/.operar(x, y)) || laberinto/*Copy*/.getLaberinto()[x][y].isVisited())) return false;
+        Laberint laberintoCopy = new Laberint(this.laberinto);
+        laberintoCopy.setPuntuacion(puntuacion);
+        if ((x!=laberinto.getPos_fila() || y!=laberinto.getPos_columna()) && ((!laberintoCopy.operar(x, y)) || laberintoCopy.getLaberinto()[x][y].isVisited())) return false;
+        puntuacion=laberintoCopy.getPuntuacion();
         if (x!=laberinto.getPos_fila() || y!=laberinto.getPos_columna()) laberinto.setVisited(x,y);
         if (x != 0 && !laberinto.bloqueado(x-1,y) && x-1!=laberinto.getPos_fila()) {
-            if (solveExhaustiva(x - 1, y)) {
+            if (solveExhaustiva(x - 1, y,puntuacion)) {
                 if(solucion[x][y]!=-1)solucion[x][y] = index;
                 laberinto.operar(x - 1, y);
                 index++;
@@ -125,7 +127,7 @@ public class Solver {
             }
         }
         if (x != laberinto.getnFilas() - 1 && !laberinto.bloqueado(x+1,y) && x+1!=laberinto.getPos_fila()) {
-            if (solveExhaustiva(x + 1, y)) {
+            if (solveExhaustiva(x + 1, y,puntuacion)) {
                 if(solucion[x][y]!=-1)solucion[x][y] = index;
                 laberinto.operar(x + 1, y);
                 index++;
@@ -134,7 +136,7 @@ public class Solver {
             }
         }
         if (y != 0 && !laberinto.bloqueado(x,y-1) && y-1!=laberinto.getPos_columna()) {
-            if (solveExhaustiva(x, y - 1)) {
+            if (solveExhaustiva(x, y - 1,puntuacion)) {
                 if(solucion[x][y]!=-1)solucion[x][y] = index;
                 laberinto.operar(x, y - 1);
                 index++;
@@ -143,7 +145,7 @@ public class Solver {
             }
         }
         if (y != laberinto.getnCol() - 1 && !laberinto.bloqueado(x,y+1) && y+1!=laberinto.getPos_columna()) {
-            if (solveExhaustiva(x, y + 1)) {
+            if (solveExhaustiva(x, y + 1,puntuacion)) {
                 if(solucion[x][y]!=-1)solucion[x][y] = index;
                 laberinto.operar(x, y + 1);
                 index++;
