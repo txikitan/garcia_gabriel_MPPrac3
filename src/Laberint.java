@@ -1,11 +1,11 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
 /* Metodologias de la programacion - Practica 3
  *   Clase que implementa el TAD Laberinto que representara la estructura para poder operar y cargar un laberinto cualquiera
  *   Gabriel Garcia (gabriel.garcia@estudiants.urv.cat)
  */
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class Laberint {
 
 
@@ -89,8 +89,9 @@ public class Laberint {
         while ((str = in.readLine()) != null && j < nFilas) {
             tokens = str.split(",");
             for (int i = 0; i < tokens.length; i++) {
-                if (tokens[i].equalsIgnoreCase("NA")) laberinto[j][i] = null;
+                if (tokens[i].equalsIgnoreCase("NA")) laberinto[j][i] = null; // Casilla inaccesible (wall)
                 else
+                    /*Creamos casilla */
                     laberinto[j][i] = new Casilla(tokens[i].charAt(0), Integer.parseInt(String.valueOf(tokens[i].charAt(1))));
             }
             j++;
@@ -108,6 +109,7 @@ public class Laberint {
      *   -1: No se ha podido realizar el movimiento por que se ha sobrepasado al limite del laberinto, puntuacion inferior a 1,casilla es inaccesible o visitada
      *   Param direction = 'l' izquierda, 'r' derecha, 'u' up, 'd' down*/
     public int move(char direction) {
+        /*Iremos por cada direccion chequeando si estamos en el tablero y operando sobre la casilla indicada*/
         if (direction == 'l') {
             if (pos_columna - 1 >= 0 && operar(this.pos_fila, this.pos_columna - 1)) {
                 this.pos_columna--;
@@ -153,7 +155,7 @@ public class Laberint {
      *   False: No se ha podido llevar a cabo la operacion, puntuacion inferior a 1, o casilla inaccesible*/
     public boolean operar(int fila, int col) {
         int puntuacionCopy = this.puntuacion;
-        if (fila == this.nFilas || col == this.nCol) return false;
+        if (fila == this.nFilas || col == this.nCol || fila < 0 || col < 0) return false;  // Si estamos en los limites
         if (laberinto[fila][col] == null) return false;
         char op = laberinto[fila][col].operacion;
         int valor = laberinto[fila][col].valor;
