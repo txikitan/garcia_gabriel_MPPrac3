@@ -6,7 +6,7 @@
  */
 public class Solver {
     private Laberint laberinto;
-    private final int[][] solucion;   // Matriz con las casillas del camino en true mediante se vaya resolviendo el laberinto
+    private final int[][] solucion;   // Matriz con las casillas del camino mediante se vaya resolviendo el laberinto
     private int index = 1;
 
     /*Metodo constructor*/

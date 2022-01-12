@@ -16,14 +16,14 @@ public class Laberint {
         private boolean visited;
 
         /*Constructor*/
-        private Casilla(char operacion, int valor) {
+        public Casilla(char operacion, int valor) {
             this.operacion = operacion;
             this.valor = valor;
             this.visited = false;
         }
 
         /*Copy constructor*/
-        private Casilla(Casilla c) {
+        public Casilla(Casilla c) {
             this.operacion = c.operacion;
             this.valor = c.valor;
             this.visited = c.visited;
@@ -175,7 +175,7 @@ public class Laberint {
         }
     }
 
-    /*Metodo que nos indica si la casilla diagonal inferior derecha es accesible */
+    /*Metodos que nos indican si la casilla diagonal inferior o superior derecha es accesible */
     public boolean diagonalDownNull() {
         if(pos_fila+1>=nFilas || pos_columna+1>=nCol) return true;
         if (laberinto[pos_fila + 1][pos_columna + 1] == null) return true;

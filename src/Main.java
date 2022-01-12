@@ -22,7 +22,7 @@ public class Main {
             Laberint lab = Laberint.load(filename);
             Solver solver = new Solver(lab);
             if(modo==1) solver.avid();
-            if(modo==2) solver.exhaustivaPyR();
+            else solver.exhaustivaPyR();
         } catch (IOException e) {
             e.printStackTrace();
         }
